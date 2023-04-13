@@ -1,0 +1,6 @@
+{
+    " ": { "name": "air",   "code": 0, "x": 3, "y": 0 },
+    "g": { "name": "grass", "code": 1, "x": 0, "y": 0 },
+    "d": { "name": "dirt",  "code": 2, "x": 1, "y": 0 },
+    "s": { "name": "stone", "code": 3, "x": 2, "y": 0 }
+}
