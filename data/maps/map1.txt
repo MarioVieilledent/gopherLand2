@@ -1,9 +1,20 @@
 
 
-  g
-  d    gg
-       dd
-gg     ss
-ddggg
-ssdddg
-ssssssgggss
+
+    gg
+ggggdd
+ddddddgg         ggg
+ddddddddgg     ggdddg
+ddddddddddgggggdddddd
+ssdddddddddddddddddddggggg
+sssdddddddddddddddddddddddggg
+ssssdddddddddddddddddddddddddggggg
+sssssssssdddddddddddddddddddddddddgggg
+sssssssssddddddddddddddddddddddddddddd
+ssssssssssssssssssssssssssddddddddddddgggg        g
+sssssssssssssssssssssssssssssssdddddddddddgggg c gd
+sssssssssssssssssssssssssssssssssssdddddddddddgggdd
+sssssssssssssssssssssssssssssssssssssssssssssssssss
+sssssssssssssssssssssssssssssssssssssssssssssssssss
+sssssssssssssssssssssssssssssssssssssssssssssssssss
+sssssssssssssssssssssssssssssssssssssssssssssssssss

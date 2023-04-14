@@ -50,10 +50,10 @@ func (r *Ressources) loadRessources(size int) {
 		block, ok := r.Blocks[k]
 		if ok {
 			block.Img = r.RessourcePack.SubImage(image.Rect(
-				r.Blocks[k].X*size,
-				r.Blocks[k].Y*size,
-				r.Blocks[k].X*size+size,
-				r.Blocks[k].X*size+size)).(*ebiten.Image)
+				size*r.Blocks[k].X,
+				size*r.Blocks[k].Y,
+				size*(r.Blocks[k].X+1),
+				size*(r.Blocks[k].Y+1))).(*ebiten.Image)
 			r.Blocks[k] = block
 		}
 	}

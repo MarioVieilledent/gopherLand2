@@ -1,6 +1,7 @@
 {
-    " ": { "name": "air",   "code": 0, "x": 3, "y": 0 },
-    "g": { "name": "grass", "code": 1, "x": 0, "y": 0 },
-    "d": { "name": "dirt",  "code": 2, "x": 1, "y": 0 },
-    "s": { "name": "stone", "code": 3, "x": 2, "y": 0 }
+    "g": { "name": "grass",        "code": 1, "solid": true,  "x": 0, "y": 0 },
+    "d": { "name": "dirt",         "code": 2, "solid": true,  "x": 1, "y": 0 },
+    "s": { "name": "stone",        "code": 3, "solid": true,  "x": 2, "y": 0 },
+    "c": { "name": "chest_closed", "code": 4, "solid": false, "x": 0, "y": 1 },
+    "C": { "name": "chest_open",   "code": 5, "solid": false, "x": 1, "y": 1 }
 }
