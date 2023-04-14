@@ -10,28 +10,19 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
+// Ressources are the description of all single ressources
 type Ressources struct {
-	Size          int              `json:"size"`
 	Blocks        map[string]Block `json:"blocks"`
 	RessourcePack *ebiten.Image
 }
 
-type Block struct {
-	Name string `json:"name"`
-	Code int    `json:"code"`
-	X    int    `json:"x"`
-	Y    int    `json:"y"`
-	Img  *ebiten.Image
-}
-
-func New() Ressources {
+func New(size int) Ressources {
 	r := Ressources{
-		Size:          32,
 		Blocks:        map[string]Block{},
 		RessourcePack: loadRessourcePack(),
 	}
 
-	r.loadRessources()
+	r.loadRessources(size)
 
 	return r
 }
@@ -44,7 +35,7 @@ func loadRessourcePack() *ebiten.Image {
 	return img
 }
 
-func (r *Ressources) loadRessources() {
+func (r *Ressources) loadRessources(size int) {
 	data, err := os.ReadFile("data/tables/ressources.json")
 	if err != nil {
 		panic(err)
@@ -59,10 +50,10 @@ func (r *Ressources) loadRessources() {
 		block, ok := r.Blocks[k]
 		if ok {
 			block.Img = r.RessourcePack.SubImage(image.Rect(
-				r.Blocks[k].X*r.Size,
-				r.Blocks[k].Y*r.Size,
-				r.Blocks[k].X*r.Size+r.Size,
-				r.Blocks[k].X*r.Size+r.Size)).(*ebiten.Image)
+				r.Blocks[k].X*size,
+				r.Blocks[k].Y*size,
+				r.Blocks[k].X*size+size,
+				r.Blocks[k].X*size+size)).(*ebiten.Image)
 			r.Blocks[k] = block
 		}
 	}

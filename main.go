@@ -1,9 +1,7 @@
 package main
 
-import (
-	"gopherLand2/src/graphics"
-)
+import "gopherLand2/src/graphics/gameWindow"
 
 func main() {
-	graphics.OpenWindow()
+	gameWindow.OpenWindow()
 }

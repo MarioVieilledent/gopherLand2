@@ -1,7 +1,6 @@
 package gameMap
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
@@ -22,14 +21,15 @@ func New() GameMap {
 	return gm
 }
 
+// Load a map from a txt file
 func (gm *GameMap) loadMap(file string) {
 	data, err := os.ReadFile("data/maps/" + file)
+
 	if err != nil {
 		panic(err)
 	}
 
 	for y, line := range strings.Split(string(data), "\r\n") {
-		fmt.Println(line)
 		gm.Blocks = append(gm.Blocks, []string{})
 		for _, ru := range line {
 			str := string(ru)
