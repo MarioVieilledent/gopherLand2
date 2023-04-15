@@ -1,12 +1,12 @@
-package instance
+package localInstance
 
 import (
 	"gopherLand2/src/game"
-	"gopherLand2/src/instance/gameWindow"
-	"gopherLand2/src/instance/io"
+	"gopherLand2/src/localInstance/gameWindow"
+	"gopherLand2/src/localInstance/io"
 )
 
-type Instance struct {
+type LocalInstance struct {
 	Io        io.Io
 	LocalGame game.Game
 }
@@ -14,7 +14,7 @@ type Instance struct {
 func StartInstance() {
 	localChannel := make(chan string)
 
-	instance := Instance{
+	instance := LocalInstance{
 		Io:        io.New(localChannel),
 		LocalGame: game.New(localChannel),
 	}
@@ -23,4 +23,5 @@ func StartInstance() {
 	go instance.LocalGame.RunPlayer()
 
 	gameWindow.OpenWindow(instance.Io, instance.LocalGame)
+
 }

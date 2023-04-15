@@ -1,7 +1,17 @@
 {
-    "g": { "name": "grass",        "code": 1, "solid": true,  "x": 0, "y": 0 },
-    "d": { "name": "dirt",         "code": 2, "solid": true,  "x": 1, "y": 0 },
-    "s": { "name": "stone",        "code": 3, "solid": true,  "x": 2, "y": 0 },
-    "c": { "name": "chest_closed", "code": 4, "solid": false, "x": 0, "y": 1 },
-    "C": { "name": "chest_open",   "code": 5, "solid": false, "x": 1, "y": 1 }
+    "g": { "name": "grass",        "code": 1,  "solid": true,  "x": 0, "y": 0, "w": 1, "h": 1 },
+    "d": { "name": "dirt",         "code": 2,  "solid": true,  "x": 1, "y": 0, "w": 1, "h": 1 },
+    "s": { "name": "stone",        "code": 3,  "solid": true,  "x": 2, "y": 0, "w": 1, "h": 1 },
+    "b": { "name": "brick",        "code": 4,  "solid": true,  "x": 3, "y": 0, "w": 1, "h": 1 },
+    "a": { "name": "sand",         "code": 5,  "solid": true,  "x": 4, "y": 0, "w": 1, "h": 1 },
+    "l": { "name": "glass",        "code": 6,  "solid": true,  "x": 5, "y": 0, "w": 1, "h": 1 },
+    "c": { "name": "chest_closed", "code": 4,  "solid": false, "x": 0, "y": 1, "w": 1, "h": 1 },
+    "C": { "name": "chest_open",   "code": 5,  "solid": false, "x": 1, "y": 1, "w": 1, "h": 1 },
+    "h": { "name": "herbs",        "code": 6,  "solid": false, "x": 2, "y": 1, "w": 1, "h": 1 },
+    "f": { "name": "flower",       "code": 7,  "solid": false, "x": 3, "y": 1, "w": 1, "h": 1 },
+    "r": { "name": "grave_cross",  "code": 8,  "solid": false, "x": 4, "y": 1, "w": 1, "h": 1 },
+    "W": { "name": "water",        "code": 9,  "solid": false, "x": 5, "y": 1, "w": 1, "h": 1 },
+    "w": { "name": "water_top",    "code": 10, "solid": false, "x": 6, "y": 1, "w": 1, "h": 1 },
+    "P": { "name": "player_man",   "code": 11, "solid": false, "x": 0, "y": 2, "w": 1, "h": 2 },
+    "p": { "name": "player_woman", "code": 12, "solid": false, "x": 1, "y": 2, "w": 1, "h": 2 }
 }

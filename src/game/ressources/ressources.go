@@ -12,49 +12,52 @@ import (
 
 // Ressources are the description of all single ressources
 type Ressources struct {
-	Blocks        map[string]Block `json:"blocks"`
-	RessourcePack *ebiten.Image
+	Elements        map[string]Element `json:"blocks"`
+	RessourcePack   *ebiten.Image
+	BackgroundImage *ebiten.Image
 }
 
 func New(size int) Ressources {
 	r := Ressources{
-		Blocks:        map[string]Block{},
-		RessourcePack: loadRessourcePack(),
+		Elements:        map[string]Element{},
+		RessourcePack:   loadImage("data/ressources/defaultRessourcePack.png"),
+		BackgroundImage: loadImage("data/ressources/defaultBackground.png"),
 	}
 
-	r.loadRessources(size)
+	r.loadElements(size)
 
 	return r
 }
 
-func loadRessourcePack() *ebiten.Image {
-	img, _, err := ebitenutil.NewImageFromFile("data/ressources/defaultRessourcePack.png")
+func loadImage(path string) *ebiten.Image {
+	img, _, err := ebitenutil.NewImageFromFile(path)
 	if err != nil {
 		log.Println(err)
 	}
 	return img
 }
 
-func (r *Ressources) loadRessources(size int) {
+func (r *Ressources) loadElements(size int) {
 	data, err := os.ReadFile("data/tables/ressources.json")
 	if err != nil {
 		panic(err)
 	}
 
-	err = json.Unmarshal(data, &r.Blocks)
+	err = json.Unmarshal(data, &r.Elements)
 	if err != nil {
 		panic(err)
 	}
 
-	for k := range r.Blocks {
-		block, ok := r.Blocks[k]
+	for k := range r.Elements {
+		elem, ok := r.Elements[k]
 		if ok {
-			block.Img = r.RessourcePack.SubImage(image.Rect(
-				size*r.Blocks[k].X,
-				size*r.Blocks[k].Y,
-				size*(r.Blocks[k].X+1),
-				size*(r.Blocks[k].Y+1))).(*ebiten.Image)
-			r.Blocks[k] = block
+			elem.Img = r.RessourcePack.SubImage(image.Rect(
+				size*elem.X,
+				size*elem.Y,
+				size*elem.X+size*elem.W,
+				size*elem.Y+size*elem.H)).(*ebiten.Image)
+
+			r.Elements[k] = elem
 		}
 	}
 }

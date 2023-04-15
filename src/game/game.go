@@ -49,10 +49,16 @@ func (g *Game) RunPlayer() {
 	for {
 		action = <-g.Channel
 		if action == "left" {
-			g.Player[0].Pos.X -= 0.5
+			g.Player[0].Pos.X -= 0.3
 		}
 		if action == "right" {
-			g.Player[0].Pos.X += 0.5
+			g.Player[0].Pos.X += 0.3
+		}
+		if action == "up" {
+			g.Player[0].Pos.Y -= 0.3
+		}
+		if action == "down" {
+			g.Player[0].Pos.Y += 0.3
 		}
 	}
 }
