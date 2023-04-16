@@ -5,16 +5,16 @@ import (
 )
 
 func (g *Graphics) drawBlocks(screen *ebiten.Image) {
-	xPlayer := g.game.Player[0].Pos.X
-	yPlayer := g.game.Player[0].Pos.Y
+	xPlayer := g.game.Players[0].Pos.X
+	yPlayer := g.game.Players[0].Pos.Y
 
 	for y, line := range g.game.GameMap.Blocks {
 		for x, res := range line {
 			op := &ebiten.DrawImageOptions{}
 
 			op.GeoM.Translate(
-				(float64(x)-xPlayer)*float64(g.game.Config.Size),
-				(float64(y)-yPlayer)*float64(g.game.Config.Size),
+				(float64(x)-xPlayer)*g.size+g.halfWidth,
+				(float64(y)-yPlayer)*g.size+g.halfHeight,
 			)
 
 			val, ok := g.game.Ressources.Elements[res]

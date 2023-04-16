@@ -8,6 +8,7 @@ import (
 type Config struct {
 	Version string `json:"version"`
 	Size    int    `json:"size"`
+	TickMS  int    `json:"tickMS"`
 }
 
 func loadConfig() (cfg Config) {

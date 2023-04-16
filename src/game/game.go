@@ -8,14 +8,16 @@ import (
 )
 
 type Game struct {
-	Config     Config                // A config
+	Config     Config                // The game's config
 	Ressources ressources.Ressources // All single instance ressources
 	GameMap    gameMap.GameMap       // A map
-	Player     []entity.Player       // A list of players
+	Players    []entity.Player       // A list of players
 	Channel    chan string           // DEBUG controls the player[0]
 	Tick       int                   // Tick of the game
+	TickMS     int                   // Delay between each tick in ms
 }
 
+// Create a new game with a channel that recieve players' actions
 func New(ch chan string) Game {
 	// Load game's config
 	cfg := loadConfig()
@@ -25,11 +27,10 @@ func New(ch chan string) Game {
 		Config:     cfg,
 		Ressources: ressources.New(cfg.Size),
 		GameMap:    gameMap.New(),
-		Player: []entity.Player{
-			entity.NewPlayer(entity.Pos{X: 1.0, Y: 1.0}),
-		},
-		Channel: ch,
-		Tick:    0,
+		Players:    []entity.Player{},
+		Channel:    ch,
+		Tick:       0,
+		TickMS:     cfg.TickMS,
 	}
 
 	return g
@@ -39,26 +40,14 @@ func New(ch chan string) Game {
 func (g *Game) Run() {
 	for {
 		g.Tick++
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(time.Duration(g.TickMS) * time.Millisecond)
+		for playerId := range g.Players {
+			g.ComputeTick(playerId)
+		}
 	}
 }
 
-func (g *Game) RunPlayer() {
-	var action string
-
-	for {
-		action = <-g.Channel
-		if action == "left" {
-			g.Player[0].Pos.X -= 0.3
-		}
-		if action == "right" {
-			g.Player[0].Pos.X += 0.3
-		}
-		if action == "up" {
-			g.Player[0].Pos.Y -= 0.3
-		}
-		if action == "down" {
-			g.Player[0].Pos.Y += 0.3
-		}
-	}
+// Add a new player
+func (g *Game) AddPlayer(playerPos entity.Pos) {
+	g.Players = append(g.Players, entity.NewPlayer(playerPos))
 }

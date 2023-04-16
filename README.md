@@ -4,7 +4,7 @@ So I'll try to build a 2D game, exploration, construction, fights, lvl up, multi
 
 ## Ideas
 
-- Only english game (maybe Norwegian is ok)
+- Only english game
 - I won't do the grafoosms
 
 ## To do
@@ -12,9 +12,9 @@ So I'll try to build a 2D game, exploration, construction, fights, lvl up, multi
 | Stat | To do         | Description                                                                             |
 | ---- | ------------- | --------------------------------------------------------------------------------------- |
 | Ok   | Window        | Open resizable window                                                                   |
-| Flem | Map           | Read a map in a file format and displays it correctly                                   |
-| Flem | Player        | A player is animated and can move through a simple key set                              |
-| Flem | Mob/NPC       | Player can interact with NPC and mobs                                                   |
-| Flem | Items         | Items just exists in the game, can pop, can be stored                                   |
-| Flem | Multiplayer   | Possible to play multiplayer through TCP server                                         |
-| Flem | Multiplatform | The game works for Win32, Win64, and most used Linux archs, server can run on raspberry |
+| Ok   | Map           | Read a map in a file format and displays it correctly                                   |
+| Nok  | Player        | A player is animated and can move through a simple key set                              |
+| Nok  | Mob/NPC       | Player can interact with NPC and mobs                                                   |
+| Nok  | Items         | Items just exists in the game, can pop, can be stored                                   |
+| Nok  | Multiplayer   | Possible to play multiplayer through TCP server                                         |
+| Nok  | Multiplatform | The game works for Win32, Win64, and most used Linux archs, server can run on raspberry |
