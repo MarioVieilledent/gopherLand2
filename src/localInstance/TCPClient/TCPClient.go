@@ -5,12 +5,10 @@ import (
 	"os"
 )
 
-const HOST string = "localhost"
-const PORT string = "8080"
 const TYPE string = "tcp"
 
-func StartTCPClient() {
-	tcpServer, err := net.ResolveTCPAddr(TYPE, HOST+":"+PORT)
+func StartTCPClient(host, port string, TCPChannel chan string) {
+	tcpServer, err := net.ResolveTCPAddr(TYPE, host+":"+port)
 
 	if err != nil {
 		println("ResolveTCPAddr failed:", err.Error())
@@ -22,22 +20,25 @@ func StartTCPClient() {
 		println("Dial failed:", err.Error())
 		os.Exit(1)
 	}
+	defer conn.Close()
 
-	_, err = conn.Write([]byte("This is a message"))
-	if err != nil {
-		println("Write data failed:", err.Error())
-		os.Exit(1)
+	for {
+		action := <-TCPChannel
+
+		_, err = conn.Write([]byte(action))
+		if err != nil {
+			println("Write data failed:", err.Error())
+			// os.Exit(1)
+		}
+
+		// buffer to get data
+		received := make([]byte, 1024)
+		_, err = conn.Read(received)
+		if err != nil {
+			println("Read data failed:", err.Error())
+			// os.Exit(1)
+		}
+
+		println("Received message:", string(received))
 	}
-
-	// buffer to get data
-	received := make([]byte, 1024)
-	_, err = conn.Read(received)
-	if err != nil {
-		println("Read data failed:", err.Error())
-		os.Exit(1)
-	}
-
-	println("Received message:", string(received))
-
-	conn.Close()
 }

@@ -2,6 +2,7 @@ package serverInstance
 
 import (
 	"gopherLand2/src/game"
+	"gopherLand2/src/serverInstance/server"
 )
 
 type Serverinstance struct {
@@ -15,6 +16,7 @@ func StartInstance() {
 		LocalGame: game.New(localChannel),
 	}
 
-	instance.LocalGame.Run()
+	go instance.LocalGame.Run()
 
+	server.StartTCPserver()
 }

@@ -6,12 +6,12 @@ import (
 )
 
 type Io struct {
-	channel chan string
+	channels []chan string
 }
 
-func New(ch chan string) Io {
+func New(chs []chan string) Io {
 	return Io{
-		channel: ch,
+		channels: chs,
 	}
 }
 
@@ -19,27 +19,33 @@ func (io Io) Update() {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) ||
 		ebiten.IsKeyPressed(ebiten.KeyW) ||
 		ebiten.IsKeyPressed(ebiten.KeySpace) {
-		io.channel <- "up"
+		io.send("up")
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) ||
 		ebiten.IsKeyPressed(ebiten.KeyD) {
-		io.channel <- "right"
+		io.send("right")
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowDown) ||
 		ebiten.IsKeyPressed(ebiten.KeyS) {
-		io.channel <- "down"
+		io.send("down")
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) ||
 		ebiten.IsKeyPressed(ebiten.KeyA) {
-		io.channel <- "left"
+		io.send("left")
 	}
 
 	if inpututil.IsKeyJustReleased(ebiten.KeyArrowRight) ||
 		inpututil.IsKeyJustReleased(ebiten.KeyD) {
-		io.channel <- "released_right"
+		io.send("released_right")
 	}
 	if inpututil.IsKeyJustReleased(ebiten.KeyArrowLeft) ||
 		inpututil.IsKeyJustReleased(ebiten.KeyA) {
-		io.channel <- "released_left"
+		io.send("released_left")
+	}
+}
+
+func (io Io) send(action string) {
+	for _, ch := range io.channels {
+		ch <- action
 	}
 }
