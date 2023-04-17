@@ -1,8 +1,8 @@
 package entity
 
-const DEFAULT_SPEED float64 = 0.05
-const DEFAULT_JUMP_SPEED float64 = 0.06
-const GRAVITY float64 = 0.0005
+const DEFAULT_SPEED float64 = 0.08
+const DEFAULT_JUMP_SPEED float64 = 0.21
+const GRAVITY float64 = 0.0065
 
 type Player struct {
 	// Movement properties
@@ -26,7 +26,7 @@ func NewPlayer(pos Pos) Player {
 		MovesLeft:     false,
 		MovesRight:    false,
 
-		EatBox:    [4]float64{0.1, 0.1, 0.9, 2.0},
+		EatBox:    [4]float64{0.1, 0.1, 0.9, 1.95},
 		Speed:     DEFAULT_SPEED,
 		JumpSpeed: DEFAULT_JUMP_SPEED,
 	}

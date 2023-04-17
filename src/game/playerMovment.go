@@ -2,6 +2,7 @@ package game
 
 import (
 	"gopherLand2/src/game/entity"
+	"math"
 )
 
 // Each game tick, move player
@@ -51,6 +52,9 @@ func (g *Game) moveVertically(y float64) {
 			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2], g.Player.Pos.Y+g.Player.EatBox[3]+y) {
 			g.Player.Pos.Y += y
 		} else {
+			// Move down as much as possible
+			g.Player.Pos.Y = math.Round(g.Player.Pos.Y)
+			// Land in ground
 			g.Player.TouchesGround = true
 			g.Player.VerticalVelocity = 0.0
 		}
@@ -59,12 +63,13 @@ func (g *Game) moveVertically(y float64) {
 			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2], g.Player.Pos.Y+g.Player.EatBox[1]+y) {
 			g.Player.Pos.Y += y
 		} else {
+			// Hit ceiling
 			g.Player.VerticalVelocity = 0.0
 		}
 	}
 
-	if g.MultiplayerChannel != nil {
-		g.MultiplayerChannel <- g.Player.Pos
+	if g.PlayerPosChannel != nil {
+		g.PlayerPosChannel <- g.Player.Pos
 	}
 }
 
@@ -74,20 +79,22 @@ func (g *Game) moveHorizonally(x float64) {
 		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[2]+x, g.Player.Pos.Y+g.Player.EatBox[1]) &&
 			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2]+x, g.Player.Pos.Y+1.0) &&
 			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2]+x, g.Player.Pos.Y+g.Player.EatBox[3]) {
+			// Move right and check if floor under
 			g.Player.Pos.X += x
-			g.checkNothingUnder()
+			g.checkTouchesGround()
 		}
 	} else if x < 0.0 { // Player goes left
 		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[0]+x, g.Player.Pos.Y+g.Player.EatBox[1]) &&
 			!g.Collide(g.Player.Pos.X+g.Player.EatBox[0]+x, g.Player.Pos.Y+1.0) &&
 			!g.Collide(g.Player.Pos.X+g.Player.EatBox[0]+x, g.Player.Pos.Y+g.Player.EatBox[3]) {
+			// Move left and check if floor under
 			g.Player.Pos.X += x
-			g.checkNothingUnder()
+			g.checkTouchesGround()
 		}
 	}
 
-	if g.MultiplayerChannel != nil {
-		g.MultiplayerChannel <- g.Player.Pos
+	if g.PlayerPosChannel != nil {
+		g.PlayerPosChannel <- g.Player.Pos
 	}
 }
 
@@ -106,7 +113,7 @@ func (g *Game) Collide(x, y float64) bool {
 }
 
 // Checks if something a solid block is under the player, if not, players is not touching the ground anymore
-func (g *Game) checkNothingUnder() {
+func (g *Game) checkTouchesGround() {
 	if g.Player.TouchesGround {
 		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[0], g.Player.Pos.Y+g.Player.EatBox[3]+0.5) &&
 			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2], g.Player.Pos.Y+g.Player.EatBox[3]+0.5) {

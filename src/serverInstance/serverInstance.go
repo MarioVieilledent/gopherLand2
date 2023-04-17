@@ -1,22 +1,28 @@
 package serverInstance
 
 import (
-	"gopherLand2/src/game"
-	"gopherLand2/src/serverInstance/server"
+	"gopherLand2/src/game/entity"
+	"net"
 )
 
 type Serverinstance struct {
-	LocalGame game.Game
+	PlayersConnected []PlayerConn
+}
+
+type PlayerConn struct {
+	Id   int
+	Pos  entity.Pos
+	Conn *net.Conn
+}
+
+func (si *Serverinstance) AddPlayer(player PlayerConn) {
+	si.PlayersConnected = append(si.PlayersConnected, player)
 }
 
 func StartInstance() {
-	localChannel := make(chan string)
-
-	instance := Serverinstance{
-		LocalGame: game.New(localChannel),
+	serverInstance := Serverinstance{
+		PlayersConnected: []PlayerConn{},
 	}
 
-	go instance.LocalGame.Run()
-
-	server.StartTCPserver()
+	serverInstance.startTCPserver()
 }

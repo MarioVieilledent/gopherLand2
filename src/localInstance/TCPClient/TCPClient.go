@@ -9,7 +9,7 @@ import (
 
 const TYPE string = "tcp"
 
-func StartTCPClient(host, port string, multiplayerChannel chan entity.Pos) {
+func StartTCPClient(host, port string, playerPosChannel chan entity.Pos, allPlayersPosChannel chan []byte) {
 	tcpServer, err := net.ResolveTCPAddr(TYPE, host+":"+port)
 
 	if err != nil {
@@ -24,24 +24,30 @@ func StartTCPClient(host, port string, multiplayerChannel chan entity.Pos) {
 	}
 	defer conn.Close()
 
+	fmt.Println("Connected to server " + host + ":" + port)
+
+	// Receive data from server
+	go func() {
+		for {
+			received := make([]byte, 1024)
+			_, err = conn.Read(received)
+			if err != nil {
+				fmt.Println("Read data failed:", err.Error())
+				os.Exit(1)
+			} else {
+				allPlayersPosChannel <- received
+			}
+		}
+	}()
+
+	// Send own player position
 	for {
-		action := <-multiplayerChannel
-		fmt.Println(action.ToString())
+		action := <-playerPosChannel
 
 		_, err = conn.Write([]byte(action.ToString()))
 		if err != nil {
-			println("Write data failed:", err.Error())
-			// os.Exit(1)
+			fmt.Println("Write data failed:", err.Error())
+			os.Exit(1)
 		}
-
-		// buffer to get data
-		received := make([]byte, 1024)
-		_, err = conn.Read(received)
-		if err != nil {
-			println("Read data failed:", err.Error())
-			// os.Exit(1)
-		}
-
-		println("Received message:", string(received))
 	}
 }

@@ -1,7 +1,6 @@
 package gameWindow
 
 import (
-	"fmt"
 	"log"
 
 	"gopherLand2/src/game"
@@ -15,8 +14,8 @@ const WIDTH int = 987
 const HEIGHT int = 610
 
 type Graphics struct {
-	game game.Game // Instance of the game
-	io   io.Io     // Instance of input/output for player control
+	game *game.Game // Instance of the game
+	io   io.Io      // Instance of input/output for player control
 
 	fullScreen bool // Window is in fullscreen mode or not
 
@@ -25,7 +24,7 @@ type Graphics struct {
 	height     int     // current window height
 	halfWidth  float64
 	halfHeight float64
-	bgScale    float64 // Scale for 4K 16/9 Background to screen size (calculed only when window is resized)
+	bgScale    float64 // Scale for 4K 16/9 Background to screen size (calculated only when window is resized)
 }
 
 func (g *Graphics) Update() error {
@@ -39,10 +38,9 @@ func (g *Graphics) Update() error {
 }
 
 func (g *Graphics) Draw(screen *ebiten.Image) {
-	fmt.Println(g.game.Player.Pos.X)
 	g.drawBasics(screen)
 	g.drawBlocks(screen)
-	g.drawEntities(screen, 0)
+	g.drawEntities(screen)
 	g.drawDebug(screen)
 }
 
@@ -50,7 +48,7 @@ func (g *Graphics) Layout(outsideWidth, outsideHeight int) (screenWidth, screenH
 	return outsideWidth, outsideHeight
 }
 
-func OpenWindow(io io.Io, game game.Game) {
+func OpenWindow(io io.Io, game *game.Game) {
 	ebiten.SetWindowSize(WIDTH, HEIGHT)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("GopherLand2")

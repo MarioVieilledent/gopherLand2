@@ -2,8 +2,9 @@ package gameWindow
 
 import "github.com/hajimehoshi/ebiten/v2"
 
-func (g *Graphics) drawEntities(screen *ebiten.Image, playingPlayerId int) {
+func (g *Graphics) drawEntities(screen *ebiten.Image) {
 
+	// Draw own player
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(
 		g.halfWidth,
@@ -11,23 +12,18 @@ func (g *Graphics) drawEntities(screen *ebiten.Image, playingPlayerId int) {
 	)
 	screen.DrawImage(g.game.Ressources.Elements["P"].Img, op)
 
-	/* Old Method for preparing drawing all players
-	for playerId, player := range g.game.Players {
+	// Draw other players
+	xPlayer := g.game.Player.Pos.X
+	yPlayer := g.game.Player.Pos.Y
+
+	for _, pos := range g.game.PlayersPos {
 		op := &ebiten.DrawImageOptions{}
 
-		if playingPlayerId == playerId {
-			op.GeoM.Translate(
-				g.halfWidth,
-				g.halfHeight,
-			)
-		} else {
-			op.GeoM.Translate(
-				player.Pos.X*g.size,
-				player.Pos.Y*g.size,
-			)
-		}
+		op.GeoM.Translate(
+			(float64(pos.X)-xPlayer)*g.size+g.halfWidth,
+			(float64(pos.Y)-yPlayer)*g.size+g.halfHeight,
+		)
 
-		screen.DrawImage(g.game.Ressources.Elements["P"].Img, op)
+		screen.DrawImage(g.game.Ressources.Elements["p"].Img, op)
 	}
-	*/
 }
