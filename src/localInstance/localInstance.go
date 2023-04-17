@@ -8,44 +8,36 @@ import (
 	"gopherLand2/src/localInstance/io"
 )
 
-type LocalInstance struct {
-	Io        io.Io
-	LocalGame game.Game
-}
-
+// Game solo
 func StartInstance() {
 	localChannel := make(chan string)
 
 	game := game.New(localChannel)
-	game.AddPlayer(entity.Pos{X: 7, Y: -1})
+	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0})
 
-	instance := LocalInstance{
-		Io:        io.New([]chan string{localChannel}),
-		LocalGame: game,
-	}
+	io := io.New(localChannel)
 
-	go instance.LocalGame.Run()
-	go instance.LocalGame.RunPlayer(0)
+	go game.Run()
+	go game.RunPlayer()
 
-	gameWindow.OpenWindow(instance.Io, instance.LocalGame)
+	gameWindow.OpenWindow(io, game)
 }
 
+// Game multiplayer
 func ConnectToServer(host, port string) {
 	localChannel := make(chan string)
-	TCPChannel := make(chan string)
+	multiplayerChannel := make(chan entity.Pos)
 
 	game := game.New(localChannel)
-	game.AddPlayer(entity.Pos{X: 7, Y: -1})
+	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0})
+	game.BindMultiplayerChannel(multiplayerChannel)
 
-	instance := LocalInstance{
-		Io:        io.New([]chan string{localChannel, TCPChannel}),
-		LocalGame: game,
-	}
+	io := io.New(localChannel)
 
-	go instance.LocalGame.Run()
-	go instance.LocalGame.RunPlayer(0)
+	go game.Run()
+	go game.RunPlayer()
 
-	go TCPClient.StartTCPClient(host, port, TCPChannel)
+	go TCPClient.StartTCPClient(host, port, multiplayerChannel)
 
-	gameWindow.OpenWindow(instance.Io, instance.LocalGame)
+	gameWindow.OpenWindow(io, game)
 }

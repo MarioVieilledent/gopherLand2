@@ -23,6 +23,8 @@ func StartTCPserver() {
 
 	for {
 		conn, err := listener.Accept()
+		fmt.Println("New client connected")
+
 		if err != nil {
 			fmt.Println("Error accepting: ", err.Error())
 			os.Exit(1)

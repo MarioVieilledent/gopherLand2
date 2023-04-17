@@ -3,6 +3,15 @@ package gameWindow
 import "github.com/hajimehoshi/ebiten/v2"
 
 func (g *Graphics) drawEntities(screen *ebiten.Image, playingPlayerId int) {
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(
+		g.halfWidth,
+		g.halfHeight,
+	)
+	screen.DrawImage(g.game.Ressources.Elements["P"].Img, op)
+
+	/* Old Method for preparing drawing all players
 	for playerId, player := range g.game.Players {
 		op := &ebiten.DrawImageOptions{}
 
@@ -20,4 +29,5 @@ func (g *Graphics) drawEntities(screen *ebiten.Image, playingPlayerId int) {
 
 		screen.DrawImage(g.game.Ressources.Elements["P"].Img, op)
 	}
+	*/
 }

@@ -5,8 +5,8 @@ import (
 )
 
 func (g *Graphics) drawBlocks(screen *ebiten.Image) {
-	xPlayer := g.game.Players[0].Pos.X
-	yPlayer := g.game.Players[0].Pos.Y
+	xPlayer := g.game.Player.Pos.X
+	yPlayer := g.game.Player.Pos.Y
 
 	for y, line := range g.game.GameMap.Blocks {
 		for x, res := range line {

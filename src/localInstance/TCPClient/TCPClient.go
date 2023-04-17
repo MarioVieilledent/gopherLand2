@@ -1,13 +1,15 @@
 package TCPClient
 
 import (
+	"fmt"
+	"gopherLand2/src/game/entity"
 	"net"
 	"os"
 )
 
 const TYPE string = "tcp"
 
-func StartTCPClient(host, port string, TCPChannel chan string) {
+func StartTCPClient(host, port string, multiplayerChannel chan entity.Pos) {
 	tcpServer, err := net.ResolveTCPAddr(TYPE, host+":"+port)
 
 	if err != nil {
@@ -23,9 +25,10 @@ func StartTCPClient(host, port string, TCPChannel chan string) {
 	defer conn.Close()
 
 	for {
-		action := <-TCPChannel
+		action := <-multiplayerChannel
+		fmt.Println(action.ToString())
 
-		_, err = conn.Write([]byte(action))
+		_, err = conn.Write([]byte(action.ToString()))
 		if err != nil {
 			println("Write data failed:", err.Error())
 			// os.Exit(1)

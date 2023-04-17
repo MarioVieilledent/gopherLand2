@@ -5,24 +5,22 @@ import (
 )
 
 // Each game tick, move player
-func (g *Game) ComputeTick(playerId int) {
-	p := g.Players[playerId]
-
-	if p.MovesLeft && !p.MovesRight {
-		g.moveHorizonally(playerId, -entity.DEFAULT_SPEED)
+func (g *Game) ComputeTick() {
+	if g.Player.MovesLeft && !g.Player.MovesRight {
+		g.moveHorizonally(-entity.DEFAULT_SPEED)
 	}
-	if !p.MovesLeft && p.MovesRight {
-		g.moveHorizonally(playerId, entity.DEFAULT_SPEED)
+	if !g.Player.MovesLeft && g.Player.MovesRight {
+		g.moveHorizonally(entity.DEFAULT_SPEED)
 	}
 
-	if !p.TouchesGround {
-		g.moveVertically(playerId, p.VerticalVelocity)
-		g.Players[playerId].VerticalVelocity += entity.GRAVITY
+	if !g.Player.TouchesGround {
+		g.moveVertically(g.Player.VerticalVelocity)
+		g.Player.VerticalVelocity += entity.GRAVITY
 	}
 }
 
 // Handle player's control
-func (g *Game) RunPlayer(playerId int) {
+func (g *Game) RunPlayer() {
 	var action string
 
 	for {
@@ -30,62 +28,66 @@ func (g *Game) RunPlayer(playerId int) {
 
 		switch action {
 		case "left":
-			g.Players[playerId].MovesLeft = true
+			g.Player.MovesLeft = true
 		case "right":
-			g.Players[playerId].MovesRight = true
+			g.Player.MovesRight = true
 		case "up":
-			if g.Players[playerId].TouchesGround {
-				g.Players[playerId].TouchesGround = false
-				g.Players[playerId].VerticalVelocity -= g.Players[playerId].JumpSpeed
+			if g.Player.TouchesGround {
+				g.Player.TouchesGround = false
+				g.Player.VerticalVelocity -= g.Player.JumpSpeed
 			}
 		case "released_left":
-			g.Players[playerId].MovesLeft = false
+			g.Player.MovesLeft = false
 		case "released_right":
-			g.Players[playerId].MovesRight = false
+			g.Player.MovesRight = false
 		}
 	}
 }
 
 // Moves player towards direction if possible
-func (g *Game) moveVertically(playerId int, y float64) {
-	p := g.Players[playerId]
-
+func (g *Game) moveVertically(y float64) {
 	if y > 0.0 { // Player goes down
-		if !g.Collide(p.Pos.X+p.EatBox[0], p.Pos.Y+p.EatBox[3]+y) &&
-			!g.Collide(p.Pos.X+p.EatBox[2], p.Pos.Y+p.EatBox[3]+y) {
-			g.Players[playerId].Pos.Y += y
+		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[0], g.Player.Pos.Y+g.Player.EatBox[3]+y) &&
+			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2], g.Player.Pos.Y+g.Player.EatBox[3]+y) {
+			g.Player.Pos.Y += y
 		} else {
-			g.Players[playerId].TouchesGround = true
-			g.Players[playerId].VerticalVelocity = 0.0
+			g.Player.TouchesGround = true
+			g.Player.VerticalVelocity = 0.0
 		}
 	} else if y < 0.0 { // Player goes up
-		if !g.Collide(p.Pos.X+p.EatBox[0], p.Pos.Y+p.EatBox[1]+y) &&
-			!g.Collide(p.Pos.X+p.EatBox[2], p.Pos.Y+p.EatBox[1]+y) {
-			g.Players[playerId].Pos.Y += y
+		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[0], g.Player.Pos.Y+g.Player.EatBox[1]+y) &&
+			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2], g.Player.Pos.Y+g.Player.EatBox[1]+y) {
+			g.Player.Pos.Y += y
 		} else {
-			g.Players[playerId].VerticalVelocity = 0.0
+			g.Player.VerticalVelocity = 0.0
 		}
+	}
+
+	if g.MultiplayerChannel != nil {
+		g.MultiplayerChannel <- g.Player.Pos
 	}
 }
 
 // Moves left or right and check collisions
-func (g *Game) moveHorizonally(playerId int, x float64) {
-	p := g.Players[playerId]
-
+func (g *Game) moveHorizonally(x float64) {
 	if x > 0.0 { // Player goes right
-		if !g.Collide(p.Pos.X+p.EatBox[2]+x, p.Pos.Y+p.EatBox[1]) &&
-			!g.Collide(p.Pos.X+p.EatBox[2]+x, p.Pos.Y+1.0) &&
-			!g.Collide(p.Pos.X+p.EatBox[2]+x, p.Pos.Y+p.EatBox[3]) {
-			g.Players[playerId].Pos.X += x
-			g.checkNothingUnder(playerId)
+		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[2]+x, g.Player.Pos.Y+g.Player.EatBox[1]) &&
+			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2]+x, g.Player.Pos.Y+1.0) &&
+			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2]+x, g.Player.Pos.Y+g.Player.EatBox[3]) {
+			g.Player.Pos.X += x
+			g.checkNothingUnder()
 		}
 	} else if x < 0.0 { // Player goes left
-		if !g.Collide(p.Pos.X+p.EatBox[0]+x, p.Pos.Y+p.EatBox[1]) &&
-			!g.Collide(p.Pos.X+p.EatBox[0]+x, p.Pos.Y+1.0) &&
-			!g.Collide(p.Pos.X+p.EatBox[0]+x, p.Pos.Y+p.EatBox[3]) {
-			g.Players[playerId].Pos.X += x
-			g.checkNothingUnder(playerId)
+		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[0]+x, g.Player.Pos.Y+g.Player.EatBox[1]) &&
+			!g.Collide(g.Player.Pos.X+g.Player.EatBox[0]+x, g.Player.Pos.Y+1.0) &&
+			!g.Collide(g.Player.Pos.X+g.Player.EatBox[0]+x, g.Player.Pos.Y+g.Player.EatBox[3]) {
+			g.Player.Pos.X += x
+			g.checkNothingUnder()
 		}
+	}
+
+	if g.MultiplayerChannel != nil {
+		g.MultiplayerChannel <- g.Player.Pos
 	}
 }
 
@@ -104,13 +106,11 @@ func (g *Game) Collide(x, y float64) bool {
 }
 
 // Checks if something a solid block is under the player, if not, players is not touching the ground anymore
-func (g *Game) checkNothingUnder(playerId int) {
-	p := g.Players[playerId]
-
-	if p.TouchesGround {
-		if !g.Collide(p.Pos.X+p.EatBox[0], p.Pos.Y+p.EatBox[3]+0.5) &&
-			!g.Collide(p.Pos.X+p.EatBox[2], p.Pos.Y+p.EatBox[3]+0.5) {
-			g.Players[playerId].TouchesGround = false
+func (g *Game) checkNothingUnder() {
+	if g.Player.TouchesGround {
+		if !g.Collide(g.Player.Pos.X+g.Player.EatBox[0], g.Player.Pos.Y+g.Player.EatBox[3]+0.5) &&
+			!g.Collide(g.Player.Pos.X+g.Player.EatBox[2], g.Player.Pos.Y+g.Player.EatBox[3]+0.5) {
+			g.Player.TouchesGround = false
 		}
 	}
 }

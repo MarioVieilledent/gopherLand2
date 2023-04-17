@@ -1,6 +1,7 @@
 package gameWindow
 
 import (
+	"fmt"
 	"log"
 
 	"gopherLand2/src/game"
@@ -38,6 +39,7 @@ func (g *Graphics) Update() error {
 }
 
 func (g *Graphics) Draw(screen *ebiten.Image) {
+	fmt.Println(g.game.Player.Pos.X)
 	g.drawBasics(screen)
 	g.drawBlocks(screen)
 	g.drawEntities(screen, 0)
@@ -53,7 +55,7 @@ func OpenWindow(io io.Io, game game.Game) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("GopherLand2")
 
-	ebiten.SetTPS(ebiten.SyncWithFPS)
+	// ebiten.SetTPS(ebiten.SyncWithFPS)
 	// ebiten.SetTPS(144)
 
 	graphics := Graphics{

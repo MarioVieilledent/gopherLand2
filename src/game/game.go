@@ -11,10 +11,12 @@ type Game struct {
 	Config     Config                // The game's config
 	Ressources ressources.Ressources // All single instance ressources
 	GameMap    gameMap.GameMap       // A map
-	Players    []entity.Player       // A list of players
+	Player     entity.Player         // Playable player
 	Channel    chan string           // DEBUG controls the player[0]
 	Tick       int                   // Tick of the game
 	TickMS     int                   // Delay between each tick in ms
+
+	MultiplayerChannel chan entity.Pos // Channel to send if multiplayer
 }
 
 // Create a new game with a channel that recieve players' actions
@@ -27,7 +29,7 @@ func New(ch chan string) Game {
 		Config:     cfg,
 		Ressources: ressources.New(cfg.Size),
 		GameMap:    gameMap.New(),
-		Players:    []entity.Player{},
+		Player:     entity.Player{},
 		Channel:    ch,
 		Tick:       0,
 		TickMS:     cfg.TickMS,
@@ -41,13 +43,16 @@ func (g *Game) Run() {
 	for {
 		g.Tick++
 		time.Sleep(time.Duration(g.TickMS) * time.Millisecond)
-		for playerId := range g.Players {
-			g.ComputeTick(playerId)
-		}
+		g.ComputeTick()
 	}
 }
 
 // Add a new player
-func (g *Game) AddPlayer(playerPos entity.Pos) {
-	g.Players = append(g.Players, entity.NewPlayer(playerPos))
+func (g *Game) SetPlayer(playerPos entity.Pos) {
+	g.Player = entity.NewPlayer(playerPos)
+}
+
+// Bind a channel for sending to multiplayer server player's data
+func (g *Game) BindMultiplayerChannel(ch chan entity.Pos) {
+	g.MultiplayerChannel = ch
 }
