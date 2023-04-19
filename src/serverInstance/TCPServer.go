@@ -1,6 +1,7 @@
 package serverInstance
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"gopherLand2/src/game/entity"
@@ -49,7 +50,7 @@ func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 			break
 		}
 		command := buf[0]
-		data := string(buf[1:])
+		data := string(bytes.Trim(buf[1:], "\x00"))
 		switch command {
 		case byte('0'):
 			{
@@ -61,7 +62,6 @@ func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 			}
 		case byte('1'):
 			{
-				fmt.Println(si)
 				pi, err := entity.ParsePlayerInfo(data)
 				if err != nil {
 					fmt.Println("Cannot parse player's position: " + data)

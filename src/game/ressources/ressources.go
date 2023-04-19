@@ -48,16 +48,13 @@ func (r *Ressources) loadElements(size int) {
 		panic(err)
 	}
 
-	for k := range r.Elements {
-		elem, ok := r.Elements[k]
-		if ok {
-			elem.Img = r.RessourcePack.SubImage(image.Rect(
-				size*elem.X,
-				size*elem.Y,
-				size*elem.X+size*elem.W,
-				size*elem.Y+size*elem.H)).(*ebiten.Image)
+	for k, elem := range r.Elements {
+		elem.Img = r.RessourcePack.SubImage(image.Rect(
+			size*elem.X,
+			size*elem.Y,
+			size*elem.X+size*elem.W,
+			size*elem.Y+size*elem.H)).(*ebiten.Image)
 
-			r.Elements[k] = elem
-		}
+		r.Elements[k] = elem
 	}
 }
