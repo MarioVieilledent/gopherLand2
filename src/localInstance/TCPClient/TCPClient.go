@@ -9,7 +9,7 @@ import (
 
 const TYPE string = "tcp"
 
-func StartTCPClient(host, port string, playerPosChannel chan entity.Pos, allPlayersPosChannel chan []byte) {
+func StartTCPClient(host, port, nickname string, playerPosChannel chan entity.PlayerInfo, allPlayersPosChannel chan []byte) {
 	tcpServer, err := net.ResolveTCPAddr(TYPE, host+":"+port)
 
 	if err != nil {
@@ -23,6 +23,21 @@ func StartTCPClient(host, port string, playerPosChannel chan entity.Pos, allPlay
 		os.Exit(1)
 	}
 	defer conn.Close()
+
+	// Send nickname to server
+	_, err = conn.Write([]byte("0" + nickname))
+	if err != nil {
+		fmt.Println("Cannot send nickname to server:", err.Error())
+		os.Exit(1)
+	}
+	received := make([]byte, 1024)
+	_, err = conn.Read(received)
+	if err != nil {
+		fmt.Println("Read data failed:", err.Error())
+		os.Exit(1)
+	} else {
+		allPlayersPosChannel <- received
+	}
 
 	fmt.Println("Connected to server " + host + ":" + port)
 
@@ -44,7 +59,7 @@ func StartTCPClient(host, port string, playerPosChannel chan entity.Pos, allPlay
 	for {
 		action := <-playerPosChannel
 
-		_, err = conn.Write([]byte(action.ToString()))
+		_, err = conn.Write([]byte("1" + action.ToString()))
 		if err != nil {
 			fmt.Println("Write data failed:", err.Error())
 			os.Exit(1)

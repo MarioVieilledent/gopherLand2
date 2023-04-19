@@ -69,7 +69,10 @@ func (g *Game) moveVertically(y float64) {
 	}
 
 	if g.PlayerPosChannel != nil {
-		g.PlayerPosChannel <- g.Player.Pos
+		g.PlayerPosChannel <- entity.PlayerInfo{
+			Nickname: g.Player.Nickname,
+			Pos:      g.Player.Pos,
+		}
 	}
 }
 
@@ -94,7 +97,10 @@ func (g *Game) moveHorizonally(x float64) {
 	}
 
 	if g.PlayerPosChannel != nil {
-		g.PlayerPosChannel <- g.Player.Pos
+		g.PlayerPosChannel <- entity.PlayerInfo{
+			Nickname: g.Player.Nickname,
+			Pos:      g.Player.Pos,
+		}
 	}
 }
 

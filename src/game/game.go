@@ -11,18 +11,23 @@ import (
 )
 
 type Game struct {
-	Config     Config                // The game's config
+	// Config
+	Config Config // The game's config
+
+	// Ressources and map
 	Ressources ressources.Ressources // All single instance ressources
 	GameMap    gameMap.GameMap       // A map
-	Player     entity.Player         // Playable player
-	Channel    chan string           // Controls the player
-	Tick       int                   // Tick of the game
-	TickMS     int                   // Delay between each tick in ms
+
+	// Local Player
+	Player  entity.Player // Playable player
+	Channel chan string   // Controls the player
+	Tick    int           // Tick of the game
+	TickMS  int           // Delay between each tick in ms
 
 	// Multiplayer
 	PlayersPos           []entity.Pos
-	PlayerPosChannel     chan entity.Pos // Channel for own player position if multiplayer
-	AllPlayersPosChannel chan []byte     // Channel for all players positions if multiplayer
+	PlayerPosChannel     chan entity.PlayerInfo // Channel for own player position if multiplayer
+	AllPlayersPosChannel chan []byte            // Channel for all players positions if multiplayer
 }
 
 // Create a new game with a channel that receive players' actions
@@ -58,8 +63,13 @@ func (g *Game) SetPlayer(playerPos entity.Pos) {
 	g.Player = entity.NewPlayer(playerPos)
 }
 
+// Sets Player's nickname for multiplayer
+func (g *Game) SetPlayerNickname(nickname string) {
+	g.Player.Nickname = nickname
+}
+
 // Bind a channel for sending to multiplayer server player's data
-func (g *Game) BindMultiplayerChannels(playerPosChannel chan entity.Pos, allPlayersPosChannel chan []byte) {
+func (g *Game) BindMultiplayerChannels(playerPosChannel chan entity.PlayerInfo, allPlayersPosChannel chan []byte) {
 	g.PlayerPosChannel = playerPosChannel
 	g.AllPlayersPosChannel = allPlayersPosChannel
 	go g.UpdateAllPlayers()

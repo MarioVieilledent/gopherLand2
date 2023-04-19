@@ -5,6 +5,9 @@ const DEFAULT_JUMP_SPEED float64 = 0.21
 const GRAVITY float64 = 0.0065
 
 type Player struct {
+	// Identification properties
+	Nickname string
+
 	// Movement properties
 	Pos              Pos
 	TouchesGround    bool

@@ -6,22 +6,21 @@ import (
 )
 
 type Serverinstance struct {
-	PlayersConnected []PlayerConn
+	PlayersConnected map[string]PlayerConn
 }
 
 type PlayerConn struct {
-	Id   int
 	Pos  entity.Pos
 	Conn *net.Conn
 }
 
-func (si *Serverinstance) AddPlayer(player PlayerConn) {
-	si.PlayersConnected = append(si.PlayersConnected, player)
+func (si *Serverinstance) AddPlayer(nickname string, player PlayerConn) {
+	si.PlayersConnected[nickname] = player
 }
 
 func StartInstance() {
 	serverInstance := Serverinstance{
-		PlayersConnected: []PlayerConn{},
+		PlayersConnected: map[string]PlayerConn{},
 	}
 
 	serverInstance.startTCPserver()

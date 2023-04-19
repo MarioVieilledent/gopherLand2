@@ -24,13 +24,14 @@ func StartInstance() {
 }
 
 // Game multiplayer
-func ConnectToServer(host, port string) {
-	localChannel := make(chan string)         // Send user's input to game to move own player
-	playerPosChannel := make(chan entity.Pos) // Send own player position to TCPClient
-	allPlayersPosChannel := make(chan []byte) // Send all players data from TCPClient to game instance
+func ConnectToServer(host, port, nickname string) {
+	localChannel := make(chan string)                // Send user's input to game to move own player
+	playerPosChannel := make(chan entity.PlayerInfo) // Send own player position to TCPClient
+	allPlayersPosChannel := make(chan []byte)        // Send all players data from TCPClient to game instance
 
 	game := game.New(localChannel)
 	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0})
+	game.SetPlayerNickname(nickname)
 
 	game.BindMultiplayerChannels(playerPosChannel, allPlayersPosChannel)
 
@@ -39,7 +40,7 @@ func ConnectToServer(host, port string) {
 	go game.Run()
 	go game.RunPlayer()
 
-	go TCPClient.StartTCPClient(host, port, playerPosChannel, allPlayersPosChannel)
+	go TCPClient.StartTCPClient(host, port, nickname, playerPosChannel, allPlayersPosChannel)
 
 	gameWindow.OpenWindow(io, &game)
 }

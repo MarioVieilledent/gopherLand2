@@ -25,11 +25,6 @@ func (si *Serverinstance) startTCPserver() {
 	for {
 		idPlayer := len(si.PlayersConnected)
 		conn, err := listen.Accept()
-		si.AddPlayer(PlayerConn{
-			Id:   idPlayer,
-			Pos:  entity.Pos{X: 0.0, Y: 0.0},
-			Conn: &conn,
-		})
 		fmt.Println("New client connected")
 
 		if err != nil {
@@ -54,12 +49,36 @@ func (si Serverinstance) handleConnection(conn net.Conn, idPlayer int) {
 			break
 		}
 
-		strPos := string(buf)
-		pos, err := entity.ParsePos(strPos)
-		if err != nil {
-			fmt.Println("Cannot parse player's position: " + strPos)
-		} else {
-			si.PlayersConnected[idPlayer].Pos = pos
+		data := string(buf)
+		fmt.Println(data)
+		switch data[0] {
+		case '0':
+			{
+				fmt.Println(si)
+
+				si.AddPlayer(data[1:], PlayerConn{
+					Pos:  entity.Pos{X: 0, Y: 0},
+					Conn: &conn,
+				})
+				fmt.Println(si)
+				break
+			}
+		default:
+			{
+				strPlayerInfo := string(buf)
+				pi, err := entity.ParsePlayerInfo(strPlayerInfo)
+				if err != nil {
+					fmt.Println("Cannot parse player's position: " + strPlayerInfo)
+				} else {
+					pc, ok := si.PlayersConnected[pi.Nickname]
+					if ok {
+						pc.Pos = pi.Pos
+					} else {
+						fmt.Println("No player named " + pi.Nickname)
+					}
+				}
+			}
+			break
 		}
 
 		go si.sendToAll()
