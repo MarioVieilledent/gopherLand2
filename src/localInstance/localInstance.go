@@ -35,12 +35,12 @@ func ConnectToServer(host, port, nickname string) {
 
 	game.BindMultiplayerChannels(playerPosChannel, allPlayersPosChannel)
 
-	io := io.New(localChannel)
+	// io := io.New(localChannel)
 
 	go game.Run()
 	go game.RunPlayer()
 
-	go TCPClient.StartTCPClient(host, port, nickname, playerPosChannel, allPlayersPosChannel)
+	TCPClient.StartTCPClient(host, port, nickname, playerPosChannel, allPlayersPosChannel)
 
-	gameWindow.OpenWindow(io, &game)
+	// gameWindow.OpenWindow(io, &game)
 }

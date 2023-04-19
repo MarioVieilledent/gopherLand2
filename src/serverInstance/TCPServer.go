@@ -12,7 +12,7 @@ const HOST string = "0.0.0.0"
 const PORT string = "12387"
 const TYPE string = "tcp"
 
-func (si *Serverinstance) startTCPserver() {
+func (si *ServerInstance) startTCPserver() {
 	listen, err := net.Listen(TYPE, HOST+":"+PORT)
 
 	if err != nil {
@@ -38,7 +38,7 @@ func (si *Serverinstance) startTCPserver() {
 
 }
 
-func (si Serverinstance) handleConnection(conn net.Conn, idPlayer int) {
+func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 	for {
 		buf := make([]byte, 1024)
 
@@ -48,27 +48,23 @@ func (si Serverinstance) handleConnection(conn net.Conn, idPlayer int) {
 			conn.Close()
 			break
 		}
-
-		data := string(buf)
-		fmt.Println(data)
-		switch data[0] {
-		case '0':
+		command := buf[0]
+		data := string(buf[1:])
+		switch command {
+		case byte('0'):
 			{
-				fmt.Println(si)
-
-				si.AddPlayer(data[1:], PlayerConn{
+				si.AddPlayer(data, PlayerConn{
 					Pos:  entity.Pos{X: 0, Y: 0},
 					Conn: &conn,
 				})
-				fmt.Println(si)
 				break
 			}
-		default:
+		case byte('1'):
 			{
-				strPlayerInfo := string(buf)
-				pi, err := entity.ParsePlayerInfo(strPlayerInfo)
+				fmt.Println(si)
+				pi, err := entity.ParsePlayerInfo(data)
 				if err != nil {
-					fmt.Println("Cannot parse player's position: " + strPlayerInfo)
+					fmt.Println("Cannot parse player's position: " + data)
 				} else {
 					pc, ok := si.PlayersConnected[pi.Nickname]
 					if ok {
@@ -77,15 +73,20 @@ func (si Serverinstance) handleConnection(conn net.Conn, idPlayer int) {
 						fmt.Println("No player named " + pi.Nickname)
 					}
 				}
+				break
 			}
-			break
+		default:
+			{
+				fmt.Println("Unsupported TCP command")
+				break
+			}
 		}
 
 		go si.sendToAll()
 	}
 }
 
-func (si Serverinstance) sendToAll() {
+func (si *ServerInstance) sendToAll() {
 	var list []entity.Pos
 	for _, pc := range si.PlayersConnected {
 		list = append(list, pc.Pos)

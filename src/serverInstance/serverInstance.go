@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-type Serverinstance struct {
+type ServerInstance struct {
 	PlayersConnected map[string]PlayerConn
 }
 
@@ -14,12 +14,12 @@ type PlayerConn struct {
 	Conn *net.Conn
 }
 
-func (si *Serverinstance) AddPlayer(nickname string, player PlayerConn) {
+func (si *ServerInstance) AddPlayer(nickname string, player PlayerConn) {
 	si.PlayersConnected[nickname] = player
 }
 
 func StartInstance() {
-	serverInstance := Serverinstance{
+	serverInstance := ServerInstance{
 		PlayersConnected: map[string]PlayerConn{},
 	}
 
