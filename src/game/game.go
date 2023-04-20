@@ -24,10 +24,12 @@ type Game struct {
 	Tick    int           // Tick of the game
 	TickMS  int           // Delay between each tick in ms
 
-	// Multiplayer
-	PlayersPos           []entity.Pos
-	PlayerPosChannel     chan entity.PlayerInfo // Channel for own player position if multiplayer
-	AllPlayersPosChannel chan []byte            // Channel for all players positions if multiplayer
+	// Multiplayer data
+	PlayerPos map[string]entity.Pos
+
+	// Channels for multiplayer
+	PlayerPosChannel     chan entity.PlayerInfo // Channel for sending own player position if multiplayer
+	AllPlayersPosChannel chan []byte            // Channel for receiving all players positions if multiplayer
 }
 
 // Create a new game with a channel that receive players' actions
@@ -79,12 +81,14 @@ func (g *Game) BindMultiplayerChannels(playerPosChannel chan entity.PlayerInfo, 
 func (g *Game) UpdateAllPlayers() {
 	for {
 		data := <-g.AllPlayersPosChannel
-		playerPos := []entity.Pos{}
-		err := json.Unmarshal(bytes.Trim(data, string([]byte{0})), &playerPos)
+		playersConnected := map[string]entity.Pos{}
+		err := json.Unmarshal(bytes.Trim(data, string([]byte{0})), &playersConnected)
 		if err != nil {
 			fmt.Println("Error parsing players' data sent by server: " + err.Error())
+
+			fmt.Println(string(data))
 		}
 
-		g.PlayersPos = playerPos
+		g.PlayerPos = playersConnected
 	}
 }

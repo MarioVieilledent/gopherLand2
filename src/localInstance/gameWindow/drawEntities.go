@@ -16,14 +16,16 @@ func (g *Graphics) drawEntities(screen *ebiten.Image) {
 	xPlayer := g.game.Player.Pos.X
 	yPlayer := g.game.Player.Pos.Y
 
-	for _, pos := range g.game.PlayersPos {
-		op := &ebiten.DrawImageOptions{}
+	for nickname, pos := range g.game.PlayerPos {
+		if g.game.Player.Nickname != nickname {
+			op := &ebiten.DrawImageOptions{}
 
-		op.GeoM.Translate(
-			(float64(pos.X)-xPlayer)*g.size+g.halfWidth,
-			(float64(pos.Y)-yPlayer)*g.size+g.halfHeight,
-		)
+			op.GeoM.Translate(
+				(float64(pos.X)-xPlayer)*g.size+g.halfWidth,
+				(float64(pos.Y)-yPlayer)*g.size+g.halfHeight,
+			)
 
-		screen.DrawImage(g.game.Ressources.Elements["p"].Img, op)
+			screen.DrawImage(g.game.Ressources.Elements["p"].Img, op)
+		}
 	}
 }

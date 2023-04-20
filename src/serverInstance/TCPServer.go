@@ -24,7 +24,7 @@ func (si *ServerInstance) startTCPserver() {
 	fmt.Println("Listening on " + HOST + ":" + PORT)
 
 	for {
-		idPlayer := len(si.PlayersConnected)
+		idPlayer := len(si.PlayersConnections)
 		conn, err := listen.Accept()
 		fmt.Println("New client connected")
 
@@ -54,10 +54,7 @@ func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 		switch command {
 		case byte('0'):
 			{
-				si.AddPlayer(data, PlayerConn{
-					Pos:  entity.Pos{X: 0, Y: 0},
-					Conn: &conn,
-				})
+				si.AddPlayer(data, entity.Pos{X: 0, Y: 0}, &conn)
 				break
 			}
 		case byte('1'):
@@ -66,9 +63,10 @@ func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 				if err != nil {
 					fmt.Println("Cannot parse player's position: " + data)
 				} else {
-					pc, ok := si.PlayersConnected[pi.Nickname]
+					pos, ok := si.PlayersPositions[pi.Nickname]
 					if ok {
-						pc.Pos = pi.Pos
+						pos = pi.Pos
+						si.PlayersPositions[pi.Nickname] = pos
 					} else {
 						fmt.Println("No player named " + pi.Nickname)
 					}
@@ -82,21 +80,17 @@ func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 			}
 		}
 
-		go si.sendToAll()
+		si.sendToAll()
 	}
 }
 
 func (si *ServerInstance) sendToAll() {
-	var list []entity.Pos
-	for _, pc := range si.PlayersConnected {
-		list = append(list, pc.Pos)
-	}
-	for _, pc := range si.PlayersConnected {
-		playerPosStr, err := json.Marshal(list)
+	playerPosStr, err := json.Marshal(si.PlayersPositions)
+	for _, conn := range si.PlayersConnections {
 		if err != nil {
 			fmt.Println("Cannot encode players' data into json.")
 		} else {
-			(*pc.Conn).Write(playerPosStr)
+			(*conn).Write(playerPosStr)
 		}
 	}
 }
