@@ -1,20 +1,22 @@
-
-                 bb
-   hh       bb
- fhgg  b   b 
-gggddg h   b     hf
-ddddddwg f     f ggg
-ddddddgdgg     ggdddg
-ddddddddddgwwwgdddddd hf
-ssddddddddddWWdddddddgggaa a
-sssdddddddddddddddddddddaaaaa
-ssssdddddddddddddddddddddaaadggggg
-sssssssssdddddddddddddddddddddddddgggg
-sssssssssddddddddddddddddddddddddddddd
-ssssssssssssssssssssssssssddddddddddddgggg        g
-sssssssssssssssssssssssssssssssdddddddddddgggg c gd
-sssssssssssssssssssssssssssssssssssdddddddddddgggdd
-sssssssssssssssssssssssssssssssssssssssssssssssssss
-sssssssssssssssssssssssssssssssssssssssssssssssssss
-sssssssssssssssssssssssssssssssssssssssssssssssssss
-sssssssssssssssssssssssssssssssssssssssssssssssssss
+                    3
+s                   2          b
+s                   2
+s      3          b 2
+s   hh 2     bb     2         bbb
+s fhgg 2b   b       2    b           3
+sgggddg2h   b  3  hf1                2 b
+sdddddd1g f    2f ggg           3    2
+sddddddgdgg    1ggdddg          2    2   3
+sddddddddddgwwwgdddddd hf       2    2   2          c
+sssddddddddddWWdddddddgggaa aa  2    2   2         ss
+ssssdddddddddddddddddddddaaaaa h1hf  2   2 3        s
+sssssdddddddbbbbbbbddddddaaaad gggghh1h  2 2        s
+ssssssssssddb     bdddddddddd  ddddgggg  2 2        s
+ssssssssssddb     bdddddddddd  ddddddddhh1 2        s
+ssssssssssssb  c  bssssssssdd dddddddddgggg1fhh    gs
+ssssssssssssb  b              ssdddddddddddgggghchgds
+ssssssssssssbhhhhh   f        ssssssdddddddddddgggdds
+ssssssssssssbgggggbssgwwwwwssssssssssssssssssssssssss
+sssssssssssssssssssssdggWWWssssssssssssssssssssssssss
+ssssssssssssssssssssssssggsssssssssssssssssssssssssss
+sssssssssssssssssssssssssdsssssssssssssssssssssssssss

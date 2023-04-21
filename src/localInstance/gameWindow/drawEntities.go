@@ -10,7 +10,7 @@ func (g *Graphics) drawEntities(screen *ebiten.Image) {
 		g.halfWidth,
 		g.halfHeight,
 	)
-	screen.DrawImage(g.game.Ressources.Elements["P"].Img, op)
+	screen.DrawImage(g.game.Ressources.Elements[g.game.Player.Character].Img, op)
 
 	// Draw other players
 	xPlayer := g.game.Player.Pos.X

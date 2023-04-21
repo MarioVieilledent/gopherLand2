@@ -61,8 +61,16 @@ func (g *Game) Run() {
 }
 
 // Add a new player
-func (g *Game) SetPlayer(playerPos entity.Pos) {
-	g.Player = entity.NewPlayer(playerPos)
+func (g *Game) SetPlayer(playerPos entity.Pos, nickname, character string) {
+	characterKey := "k"
+	// If name is found among ressource elements,
+	// sets player's Character property to key in map g.Ressources.Elements
+	for k, v := range g.Ressources.Elements {
+		if v.Name == "player_"+character {
+			characterKey = k
+		}
+	}
+	g.Player = entity.NewPlayer(playerPos, nickname, characterKey)
 }
 
 // Sets Player's nickname for multiplayer

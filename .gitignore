@@ -1,2 +1,6 @@
+# All zip and exe files
 *.exe
 *.zip
+
+# dist folder
+dist

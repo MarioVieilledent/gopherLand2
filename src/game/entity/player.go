@@ -6,7 +6,8 @@ const GRAVITY float64 = 0.0065
 
 type Player struct {
 	// Identification properties
-	Nickname string
+	Nickname  string // User nickname
+	Character string // Character played (key not name)
 
 	// Movement properties
 	Pos              Pos
@@ -22,8 +23,11 @@ type Player struct {
 }
 
 // Create a new player
-func NewPlayer(pos Pos) Player {
+func NewPlayer(pos Pos, nickname, character string) Player {
 	return Player{
+		Nickname:  nickname,
+		Character: character,
+
 		Pos:           pos,
 		TouchesGround: false,
 		MovesLeft:     false,

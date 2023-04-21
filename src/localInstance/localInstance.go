@@ -9,11 +9,11 @@ import (
 )
 
 // Game solo
-func StartInstance() {
+func StartInstance(nickname, character string) {
 	localChannel := make(chan string)
 
 	game := game.New(localChannel)
-	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0})
+	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0}, nickname, character)
 
 	io := io.New(localChannel)
 
@@ -24,13 +24,13 @@ func StartInstance() {
 }
 
 // Game multiplayer
-func ConnectToServer(host, port, nickname string) {
+func ConnectToServer(host, port, nickname, character string) {
 	localChannel := make(chan string)                // Send user's input to game to move own player
 	playerPosChannel := make(chan entity.PlayerInfo) // Send own player position to TCPClient
 	allPlayersPosChannel := make(chan []byte)        // Send all players data from TCPClient to game instance
 
 	game := game.New(localChannel)
-	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0})
+	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0}, nickname, character)
 	game.SetPlayerNickname(nickname)
 
 	game.BindMultiplayerChannels(playerPosChannel, allPlayersPosChannel)
