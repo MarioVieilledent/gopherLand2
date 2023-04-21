@@ -9,19 +9,17 @@ import (
 	"os"
 )
 
-const HOST string = "0.0.0.0"
-const PORT string = "12387"
 const TYPE string = "tcp"
 
-func (si *ServerInstance) startTCPserver() {
-	listen, err := net.Listen(TYPE, HOST+":"+PORT)
+func (si *ServerInstance) startTCPserver(host, port string) {
+	listen, err := net.Listen(TYPE, host+":"+port)
 
 	if err != nil {
 		fmt.Println("Error listening:", err.Error())
 		os.Exit(1)
 	}
 
-	fmt.Println("Listening on " + HOST + ":" + PORT)
+	fmt.Println("Listening on " + host + ":" + port)
 
 	for {
 		idPlayer := len(si.PlayersConnections)

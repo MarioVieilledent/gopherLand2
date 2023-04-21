@@ -15,11 +15,11 @@ func (si *ServerInstance) AddPlayer(nickname string, playerPos entity.Pos, conn 
 	si.PlayersConnections[nickname] = conn
 }
 
-func StartInstance() {
+func StartInstance(host, port string) {
 	serverInstance := ServerInstance{
 		PlayersPositions:   map[string]entity.Pos{},
 		PlayersConnections: map[string]*net.Conn{},
 	}
 
-	serverInstance.startTCPserver()
+	serverInstance.startTCPserver(host, port)
 }
