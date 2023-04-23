@@ -10,10 +10,6 @@ import (
 func main() {
 	args := os.Args
 
-	for k, a := range args {
-		fmt.Println(k, a)
-	}
-
 	if len(args) >= 3 && args[1] == "server" {
 		host := args[2]
 		port := args[3]

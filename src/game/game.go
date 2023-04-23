@@ -7,7 +7,7 @@ import (
 	"gopherLand2/src/game/entity"
 	"gopherLand2/src/game/gameMap"
 	"gopherLand2/src/game/ressources"
-	"time"
+	"gopherLand2/src/localInstance/input"
 )
 
 type Game struct {
@@ -19,45 +19,44 @@ type Game struct {
 	GameMap    gameMap.GameMap       // A map
 
 	// Local Player
-	Player  entity.Player // Playable player
-	Channel chan string   // Controls the player
-	Tick    int           // Tick of the game
-	TickMS  int           // Delay between each tick in ms
+	Player entity.Player // Playable player
+	Tick   int           // Tick of the game
+	TickMS int           // Delay between each tick in ms
+
+	// PlayerInputChannel for getting input of player
+	PlayerInputChannel chan input.KeyPressed // Controls the player
 
 	// Multiplayer data
-	PlayerPos map[string]entity.Pos
+	PlayerInfos map[string]entity.PlayerInfo
 
 	// Channels for multiplayer
-	PlayerPosChannel     chan entity.PlayerInfo // Channel for sending own player position if multiplayer
-	AllPlayersPosChannel chan []byte            // Channel for receiving all players positions if multiplayer
+	PlayerPosChannel      chan entity.PlayerInfo // Channel for sending own player position if multiplayer
+	AllPlayerInfosChannel chan []byte            // Channel for receiving all players positions if multiplayer
 }
 
 // Create a new game with a channel that receive players' actions
-func New(ch chan string) Game {
+func New(ch chan input.KeyPressed) Game {
 	// Load game's config
 	cfg := loadConfig()
 
 	// Create Game
 	g := Game{
-		Config:     cfg,
-		Ressources: ressources.New(cfg.Size),
-		GameMap:    gameMap.New(),
-		Player:     entity.Player{},
-		Channel:    ch,
-		Tick:       0,
-		TickMS:     cfg.TickMS,
+		Config:             cfg,
+		Ressources:         ressources.New(cfg.Size),
+		GameMap:            gameMap.New(),
+		Player:             entity.Player{},
+		PlayerInputChannel: ch,
+		Tick:               0,
+		TickMS:             cfg.TickMS,
 	}
 
 	return g
 }
 
-// Run the game
+// Run the game, function called by ebiten's Update() function (in file gameWindow.go)
 func (g *Game) Run() {
-	for {
-		g.Tick++
-		time.Sleep(time.Duration(g.TickMS) * time.Millisecond)
-		g.ComputeTick()
-	}
+	g.Tick++
+	g.ComputeTick()
 }
 
 // Add a new player
@@ -79,24 +78,21 @@ func (g *Game) SetPlayerNickname(nickname string) {
 }
 
 // Bind a channel for sending to multiplayer server player's data
-func (g *Game) BindMultiplayerChannels(playerPosChannel chan entity.PlayerInfo, allPlayersPosChannel chan []byte) {
+func (g *Game) BindMultiplayerChannels(playerPosChannel chan entity.PlayerInfo, allPlayerInfosChannel chan []byte) {
 	g.PlayerPosChannel = playerPosChannel
-	g.AllPlayersPosChannel = allPlayersPosChannel
+	g.AllPlayerInfosChannel = allPlayerInfosChannel
 	go g.UpdateAllPlayers()
 }
 
 // Update all player in case of server send data
 func (g *Game) UpdateAllPlayers() {
 	for {
-		data := <-g.AllPlayersPosChannel
-		playersConnected := map[string]entity.Pos{}
+		data := <-g.AllPlayerInfosChannel
+		playersConnected := map[string]entity.PlayerInfo{}
 		err := json.Unmarshal(bytes.Trim(data, string([]byte{0})), &playersConnected)
 		if err != nil {
-			fmt.Println("Error parsing players' data sent by server: " + err.Error())
-
-			fmt.Println(string(data))
+			fmt.Println("Error parsing players' data sent by server: " + string(data) + " - Error:" + err.Error())
 		}
-
-		g.PlayerPos = playersConnected
+		g.PlayerInfos = playersConnected
 	}
 }

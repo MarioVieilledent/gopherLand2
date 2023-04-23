@@ -9,7 +9,7 @@ import (
 
 const TYPE string = "tcp"
 
-func StartTCPClient(host, port, nickname string, playerPosChannel chan entity.PlayerInfo, allPlayersPosChannel chan []byte) {
+func StartTCPClient(host, port, nickname string, playerPosChannel chan entity.PlayerInfo, allPlayerInfosChannel chan []byte) {
 	tcpServer, err := net.ResolveTCPAddr(TYPE, host+":"+port)
 
 	if err != nil {
@@ -36,7 +36,7 @@ func StartTCPClient(host, port, nickname string, playerPosChannel chan entity.Pl
 		fmt.Println("Read data failed:", err.Error())
 		os.Exit(1)
 	} else {
-		allPlayersPosChannel <- received
+		allPlayerInfosChannel <- received
 	}
 
 	fmt.Println("Connected to server " + host + ":" + port)
@@ -50,19 +50,24 @@ func StartTCPClient(host, port, nickname string, playerPosChannel chan entity.Pl
 				fmt.Println("Read data failed:", err.Error())
 				os.Exit(1)
 			} else {
-				allPlayersPosChannel <- received
+				allPlayerInfosChannel <- received
 			}
 		}
 	}()
 
-	// Send own player position
+	// Send own player info
 	for {
-		action := <-playerPosChannel
+		playerInfo := <-playerPosChannel
 
-		_, err = conn.Write([]byte("1" + action.ToString()))
+		pi, err := playerInfo.Stringify()
 		if err != nil {
-			fmt.Println("Write data failed:", err.Error())
-			os.Exit(1)
+			fmt.Println("Cannot parse playerInfo into JSON: " + err.Error())
+		} else {
+			_, err = conn.Write([]byte("1" + string(pi)))
+			if err != nil {
+				fmt.Println("Write data failed:", err.Error())
+				os.Exit(1)
+			}
 		}
 	}
 }

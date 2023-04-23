@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"gopherLand2/src/game"
-	"gopherLand2/src/localInstance/io"
+	"gopherLand2/src/localInstance/input"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -14,8 +14,8 @@ const WIDTH int = 987
 const HEIGHT int = 610
 
 type Graphics struct {
-	game *game.Game // Instance of the game
-	io   io.Io      // Instance of input/output for player control
+	game  *game.Game  // Instance of the game
+	input input.Input // Instance of input/output for player control
 
 	fullScreen bool // Window is in fullscreen mode or not
 
@@ -33,7 +33,9 @@ func (g *Graphics) Update() error {
 		ebiten.SetFullscreen(g.fullScreen)
 	}
 
-	g.io.Update()
+	g.input.Update()
+
+	g.game.Run()
 	return nil
 }
 
@@ -48,13 +50,13 @@ func (g *Graphics) Layout(outsideWidth, outsideHeight int) (screenWidth, screenH
 	return outsideWidth, outsideHeight
 }
 
-func OpenWindow(io io.Io, game *game.Game) {
+func OpenWindow(input input.Input, game *game.Game) {
 	ebiten.SetWindowSize(WIDTH, HEIGHT)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("GopherLand2")
 
-	// ebiten.SetTPS(ebiten.SyncWithFPS)
-	// ebiten.SetTPS(144)
+	ebiten.SetTPS(ebiten.SyncWithFPS)
+	ebiten.SetTPS(144)
 
 	graphics := Graphics{
 		game: game,
@@ -62,7 +64,7 @@ func OpenWindow(io io.Io, game *game.Game) {
 		fullScreen: false,
 
 		size:       float64(game.Config.Size),
-		io:         io,
+		input:      input,
 		width:      0,
 		height:     0,
 		halfWidth:  0.0,

@@ -5,42 +5,42 @@ import (
 	"gopherLand2/src/game/entity"
 	"gopherLand2/src/localInstance/TCPClient"
 	"gopherLand2/src/localInstance/gameWindow"
-	"gopherLand2/src/localInstance/io"
+	"gopherLand2/src/localInstance/input"
 )
 
 // Game solo
 func StartInstance(nickname, character string) {
-	localChannel := make(chan string)
+	playerInputChannel := make(chan input.KeyPressed)
 
-	game := game.New(localChannel)
+	game := game.New(playerInputChannel)
 	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0}, nickname, character)
 
-	io := io.New(localChannel)
+	input := input.New(playerInputChannel)
 
 	go game.Run()
 	go game.RunPlayer()
 
-	gameWindow.OpenWindow(io, &game)
+	gameWindow.OpenWindow(input, &game)
 }
 
 // Game multiplayer
 func ConnectToServer(host, port, nickname, character string) {
-	localChannel := make(chan string)                // Send user's input to game to move own player
-	playerPosChannel := make(chan entity.PlayerInfo) // Send own player position to TCPClient
-	allPlayersPosChannel := make(chan []byte)        // Send all players data from TCPClient to game instance
+	playerInputChannel := make(chan input.KeyPressed) // Send user's input to game to move own player
+	playerPosChannel := make(chan entity.PlayerInfo)  // Send own player position to TCPClient
+	allPlayerInfosChannel := make(chan []byte)        // Send all players data from TCPClient to game instance
 
-	game := game.New(localChannel)
+	game := game.New(playerInputChannel)
 	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0}, nickname, character)
 	game.SetPlayerNickname(nickname)
 
-	game.BindMultiplayerChannels(playerPosChannel, allPlayersPosChannel)
+	game.BindMultiplayerChannels(playerPosChannel, allPlayerInfosChannel)
 
-	io := io.New(localChannel)
+	input := input.New(playerInputChannel)
 
 	go game.Run()
 	go game.RunPlayer()
 
-	go TCPClient.StartTCPClient(host, port, nickname, playerPosChannel, allPlayersPosChannel)
+	go TCPClient.StartTCPClient(host, port, nickname, playerPosChannel, allPlayerInfosChannel)
 
-	gameWindow.OpenWindow(io, &game)
+	gameWindow.OpenWindow(input, &game)
 }

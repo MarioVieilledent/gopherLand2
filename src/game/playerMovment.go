@@ -2,6 +2,7 @@ package game
 
 import (
 	"gopherLand2/src/game/entity"
+	"gopherLand2/src/localInstance/input"
 	"math"
 )
 
@@ -13,6 +14,12 @@ func (g *Game) ComputeTick() {
 	if !g.Player.MovesLeft && g.Player.MovesRight {
 		g.moveHorizonally(entity.DEFAULT_SPEED)
 	}
+	if g.Player.IsJumping {
+		if g.Player.TouchesGround {
+			g.Player.TouchesGround = false
+			g.Player.VerticalVelocity -= g.Player.JumpSpeed
+		}
+	}
 
 	if !g.Player.TouchesGround {
 		g.moveVertically(g.Player.VerticalVelocity)
@@ -22,25 +29,25 @@ func (g *Game) ComputeTick() {
 
 // Handle player's control
 func (g *Game) RunPlayer() {
-	var action string
+	var keyPressed input.KeyPressed
 
 	for {
-		action = <-g.Channel
+		keyPressed = <-g.PlayerInputChannel
 
-		switch action {
-		case "left":
+		if keyPressed.Left {
 			g.Player.MovesLeft = true
-		case "right":
-			g.Player.MovesRight = true
-		case "up":
-			if g.Player.TouchesGround {
-				g.Player.TouchesGround = false
-				g.Player.VerticalVelocity -= g.Player.JumpSpeed
-			}
-		case "released_left":
+		} else {
 			g.Player.MovesLeft = false
-		case "released_right":
+		}
+		if keyPressed.Right {
+			g.Player.MovesRight = true
+		} else {
 			g.Player.MovesRight = false
+		}
+		if keyPressed.Up {
+			g.Player.IsJumping = true
+		} else {
+			g.Player.IsJumping = false
 		}
 	}
 }

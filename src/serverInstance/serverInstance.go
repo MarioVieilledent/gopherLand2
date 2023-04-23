@@ -6,18 +6,18 @@ import (
 )
 
 type ServerInstance struct {
-	PlayersPositions   map[string]entity.Pos
+	PlayerInfos        map[string]entity.PlayerInfo
 	PlayersConnections map[string]*net.Conn
 }
 
-func (si *ServerInstance) AddPlayer(nickname string, playerPos entity.Pos, conn *net.Conn) {
-	si.PlayersPositions[nickname] = playerPos
+func (si *ServerInstance) AddPlayer(nickname string, playerPos entity.PlayerInfo, conn *net.Conn) {
+	si.PlayerInfos[nickname] = playerPos
 	si.PlayersConnections[nickname] = conn
 }
 
 func StartInstance(host, port string) {
 	serverInstance := ServerInstance{
-		PlayersPositions:   map[string]entity.Pos{},
+		PlayerInfos:        map[string]entity.PlayerInfo{},
 		PlayersConnections: map[string]*net.Conn{},
 	}
 

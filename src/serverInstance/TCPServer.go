@@ -22,7 +22,6 @@ func (si *ServerInstance) startTCPserver(host, port string) {
 	fmt.Println("Listening on " + host + ":" + port)
 
 	for {
-		idPlayer := len(si.PlayersConnections)
 		conn, err := listen.Accept()
 		fmt.Println("New client connected")
 
@@ -32,12 +31,12 @@ func (si *ServerInstance) startTCPserver(host, port string) {
 		}
 		// defer conn.Close()
 
-		go si.handleConnection(conn, idPlayer)
+		go si.handleConnection(conn)
 	}
 
 }
 
-func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
+func (si *ServerInstance) handleConnection(conn net.Conn) {
 	for {
 		buf := make([]byte, 1024)
 
@@ -48,27 +47,27 @@ func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 			break
 		}
 		command := buf[0]
-		data := string(bytes.Trim(buf[1:], "\x00"))
+		data := bytes.Trim(buf[1:], "\x00")
 		switch command {
 		case byte('0'):
 			{
-				si.AddPlayer(data, entity.Pos{X: 0, Y: 0}, &conn)
+				si.AddPlayer(string(data), entity.PlayerInfo{}, &conn)
 				break
 			}
 		case byte('1'):
 			{
-				pi, err := entity.ParsePlayerInfo(data)
+				pi, err := entity.Parse(data)
 				if err != nil {
-					fmt.Println("Cannot parse player's position: " + data)
+					fmt.Println("Cannot parse player's position: " + string(data) + " - Error: " + err.Error())
 				} else {
-					pos, ok := si.PlayersPositions[pi.Nickname]
+					_, ok := si.PlayerInfos[pi.Nickname]
 					if ok {
-						pos = pi.Pos
-						si.PlayersPositions[pi.Nickname] = pos
+						si.PlayerInfos[pi.Nickname] = pi
 					} else {
 						fmt.Println("No player named " + pi.Nickname)
 					}
 				}
+				si.sendToAll(pi.Nickname)
 				break
 			}
 		default:
@@ -77,18 +76,18 @@ func (si *ServerInstance) handleConnection(conn net.Conn, idPlayer int) {
 				break
 			}
 		}
-
-		si.sendToAll()
 	}
 }
 
-func (si *ServerInstance) sendToAll() {
-	playerPosStr, err := json.Marshal(si.PlayersPositions)
-	for _, conn := range si.PlayersConnections {
-		if err != nil {
-			fmt.Println("Cannot encode players' data into json.")
-		} else {
-			(*conn).Write(playerPosStr)
+func (si *ServerInstance) sendToAll(except string) {
+	playerInfosBytes, err := json.Marshal(si.PlayerInfos)
+	if err != nil {
+		fmt.Println("Cannot encode players' data into json.")
+	} else {
+		for nicknameConn, conn := range si.PlayersConnections {
+			if nicknameConn != except {
+				(*conn).Write(playerInfosBytes)
+			}
 		}
 	}
 }
