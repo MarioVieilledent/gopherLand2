@@ -27,7 +27,7 @@ So I'll try to build a 2D game, exploration, construction, fights, lvl up, multi
 - **Gavin** - *Gavin thinks the world is easy. He is also a good student.*
 - **Gwen** - *Gwen is a dark depressive girl. She has a very bad memory.*
 - **Galien** - *Fkzjvqo mxbdpylkw nruaties hgc. Bibble wibble flib.*
-- **Gopher** - *Gopher know the truth about this world. He will never tell.*
+- **Gopher** - *Gopher knows the truth about this world. He will never tell.*
 
 
 ## To do

@@ -48,9 +48,12 @@ func (si *ServerInstance) handleConnection(conn net.Conn) {
 		}
 		command := buf[0]
 		data := bytes.Trim(buf[1:], "\x00")
+		fmt.Println("read")
+
 		switch command {
 		case byte('0'):
 			{
+				fmt.Println("Client connected as " + string(data))
 				si.AddPlayer(string(data), entity.PlayerInfo{}, &conn)
 				break
 			}

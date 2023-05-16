@@ -30,14 +30,18 @@ func StartTCPClient(host, port, nickname string, playerPosChannel chan entity.Pl
 		fmt.Println("Cannot send nickname to server:", err.Error())
 		os.Exit(1)
 	}
-	received := make([]byte, 1024)
-	_, err = conn.Read(received)
-	if err != nil {
-		fmt.Println("Read data failed:", err.Error())
-		os.Exit(1)
-	} else {
-		allPlayerInfosChannel <- received
-	}
+
+	// Read response of ??
+	/*
+		received := make([]byte, 1024)
+		_, err = conn.Read(received)
+		if err != nil {
+			fmt.Println("Read data failed:", err.Error())
+			os.Exit(1)
+		} else {
+			allPlayerInfosChannel <- received
+		}
+	*/
 
 	fmt.Println("Connected to server " + host + ":" + port)
 

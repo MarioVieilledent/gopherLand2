@@ -18,16 +18,16 @@ type Game struct {
 	Ressources ressources.Ressources // All single instance ressources
 	GameMap    gameMap.GameMap       // A map
 
-	// Local Player
-	Player entity.Player // Playable player
-	Tick   int           // Tick of the game
-	TickMS int           // Delay between each tick in ms
+	// Players
+	Nickname string                   // Nickname of playable player
+	Players  map[string]entity.Player // Other players
+
+	// Game tick
+	Tick   int // Tick of the game
+	TickMS int // Delay between each tick in ms
 
 	// PlayerInputChannel for getting input of player
 	PlayerInputChannel chan input.KeyPressed // Controls the player
-
-	// Multiplayer data
-	PlayerInfos map[string]entity.PlayerInfo
 
 	// Channels for multiplayer
 	PlayerPosChannel      chan entity.PlayerInfo // Channel for sending own player position if multiplayer
@@ -35,7 +35,7 @@ type Game struct {
 }
 
 // Create a new game with a channel that receive players' actions
-func New(ch chan input.KeyPressed) Game {
+func New(ch chan input.KeyPressed, nickname string) Game {
 	// Load game's config
 	cfg := loadConfig()
 
@@ -44,7 +44,8 @@ func New(ch chan input.KeyPressed) Game {
 		Config:             cfg,
 		Ressources:         ressources.New(cfg.Size),
 		GameMap:            gameMap.New(),
-		Player:             entity.Player{},
+		Nickname:           nickname,
+		Players:            map[string]entity.Player{},
 		PlayerInputChannel: ch,
 		Tick:               0,
 		TickMS:             cfg.TickMS,
@@ -56,7 +57,9 @@ func New(ch chan input.KeyPressed) Game {
 // Run the game, function called by ebiten's Update() function (in file gameWindow.go)
 func (g *Game) Run() {
 	g.Tick++
-	g.ComputeTick()
+	for nickname := range g.Players {
+		g.ManagePlayerMovement(nickname)
+	}
 }
 
 // Add a new player
@@ -69,12 +72,7 @@ func (g *Game) SetPlayer(playerPos entity.Pos, nickname, character string) {
 			characterKey = k
 		}
 	}
-	g.Player = entity.NewPlayer(playerPos, nickname, characterKey)
-}
-
-// Sets Player's nickname for multiplayer
-func (g *Game) SetPlayerNickname(nickname string) {
-	g.Player.Nickname = nickname
+	g.Players[g.Nickname] = entity.NewPlayer(playerPos, nickname, characterKey)
 }
 
 // Bind a channel for sending to multiplayer server player's data
@@ -93,6 +91,14 @@ func (g *Game) UpdateAllPlayers() {
 		if err != nil {
 			fmt.Println("Error parsing players' data sent by server: " + string(data) + " - Error:" + err.Error())
 		}
-		g.PlayerInfos = playersConnected
+
+		for nickname, pi := range playersConnected {
+			if _, ok := g.Players[nickname]; ok {
+				g.PlayerInputChannel <- pi.KeyPressed
+			} else {
+				g.Players[nickname] = entity.NewPlayer(pi.Pos, pi.Nickname, pi.Character)
+				g.PlayerInputChannel <- pi.KeyPressed
+			}
+		}
 	}
 }
