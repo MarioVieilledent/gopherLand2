@@ -12,7 +12,7 @@ So I'll try to build a 2D game, exploration, construction, fights, lvl up, multi
 
 *Run the game in solo mode as Gina.*
 
-> `gopherLand2.exe multiplayer localhost 12387 Pazu george`
+> `gopherLand2.exe multiplayer localhost 4565 Pazu george`
 
 *Run the game in multiplayer mode defining host, port, player nickname (Pazu) and playing as George*
 
@@ -29,15 +29,21 @@ So I'll try to build a 2D game, exploration, construction, fights, lvl up, multi
 - **Galien** - *Fkzjvqo mxbdpylkw nruaties hgc. Bibble wibble flib.*
 - **Gopher** - *Gopher knows the truth about this world. He will never tell.*
 
-
 ## To do
 
-| Stat   | To do         | Description                                                                             |
-| ------ | ------------- | --------------------------------------------------------------------------------------- |
-| Ok     | Window        | Open resizable window                                                                   |
-| Ok     | Map           | Read a map in a file format and displays it correctly                                   |
-| Ok     | Multiplayer   | Possible to play multiplayer through TCP server                                         |
-| Almost | Player        | A player is animated and can move through a simple key set                              |
-| Nok    | Mob/NPC       | Player can interact with NPC and mobs                                                   |
-| Nok    | Items         | Items just exists in the game, can pop, can be stored                                   |
-| Nok    | Multiplatform | The game works for Win32, Win64, and most used Linux archs, server can run on raspberry |
+| State | To do         | Description                                                                             |
+| ----- | ------------- | --------------------------------------------------------------------------------------- |
+| Nok   | Mob/NPC       | Player can interact with NPC and mobs                                                   |
+| Nok   | Items         | Items just exists in the game, can pop, can be stored                                   |
+| Ok    | Multiplatform | The game works for Win32, Win64, and most used Linux archs, server can run on raspberry |
+| Ok    | Player        | A player is animated and can move through a simple key set                              |
+| Ok    | Multiplayer   | Possible to play multiplayer through TCP server                                         |
+| Ok    | Map           | Read a map in a file format and displays it correctly                                   |
+| Ok    | Window        | Open resizable window                                                                   |
+
+## Bugs to fix
+
+| State | To fix                 | Description                                                                       |
+| ----- | ---------------------- | --------------------------------------------------------------------------------- |
+| Bug   | Map race conditions    | Golang maps does not support concurrent access                                    |
+| Fixed | Pass movement, not pos | For TCP multiplayer, do not provide player position, but rather player keyPressed |
