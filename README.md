@@ -1,6 +1,6 @@
 # gopherLand2
 
-So I'll try to build a 2D game, exploration, construction, fights, lvl up, multi players.
+![Game image](bg.png)
 
 ## Doc
 
