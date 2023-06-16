@@ -10,14 +10,15 @@ type Input struct {
 	keyPressed         KeyPressed
 }
 
-func New(ch chan KeyPressed) Input {
+func New(ch chan KeyPressed, nickname string) Input {
 	return Input{
 		playerInputChannel: ch,
 		keyPressed: KeyPressed{
-			Up:    false,
-			Right: false,
-			Down:  false,
-			Left:  false,
+			Nickname: nickname,
+			Up:       false,
+			Right:    false,
+			Down:     false,
+			Left:     false,
 		},
 	}
 }

@@ -22,5 +22,5 @@
     "e": { "name": "player_gavin",  "code": 203, "solid": false, "x": 2, "y": 2, "w": 1, "h": 2, "description": "Gavin thinks the world is easy. He is also a good student." },
     "i": { "name": "player_gwen",   "code": 204, "solid": false, "x": 3, "y": 2, "w": 1, "h": 2, "description": "Gwen is a dark depressive girl. She has a very bad memory." },
     "j": { "name": "player_galien", "code": 205, "solid": false, "x": 4, "y": 2, "w": 1, "h": 2, "description": "Fkzjvqo mxbdpylkw nruaties hgc. Bibble wibble flib." },
-    "k": { "name": "player_gopher", "code": 206, "solid": false, "x": 5, "y": 2, "w": 1, "h": 2, "description": "Gopher know the truth about this world. He will never tell." }
+    "k": { "name": "player_gopher", "code": 206, "solid": false, "x": 5, "y": 2, "w": 1, "h": 2, "description": "Gopher knows the truth about this world. He will never tell." }
 }

@@ -6,7 +6,7 @@ const GRAVITY float64 = 0.003
 
 type Player struct {
 	// Identification properties
-	Nickname  string // User nickname
+	Nickname  string // User nickname, unique ID
 	Character string // Character played (key not name)
 
 	// Movement properties

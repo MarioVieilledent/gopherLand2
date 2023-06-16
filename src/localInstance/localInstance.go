@@ -12,13 +12,13 @@ import (
 func StartInstance(nickname, character string) {
 	playerInputChannel := make(chan input.KeyPressed)
 
-	game := game.New(playerInputChannel)
+	game := game.New(playerInputChannel, nickname)
 	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0}, nickname, character)
 
-	input := input.New(playerInputChannel)
+	input := input.New(playerInputChannel, nickname)
 
 	go game.Run()
-	go game.RunPlayer()
+	go game.RunAllPlayers()
 
 	gameWindow.OpenWindow(input, &game)
 }
@@ -29,16 +29,15 @@ func ConnectToServer(host, port, nickname, character string) {
 	playerPosChannel := make(chan entity.PlayerInfo)  // Send own player position to TCPClient
 	allPlayerInfosChannel := make(chan []byte)        // Send all players data from TCPClient to game instance
 
-	game := game.New(playerInputChannel)
+	game := game.New(playerInputChannel, nickname)
 	game.SetPlayer(entity.Pos{X: 7.0, Y: -1.0}, nickname, character)
-	game.SetPlayerNickname(nickname)
 
 	game.BindMultiplayerChannels(playerPosChannel, allPlayerInfosChannel)
 
-	input := input.New(playerInputChannel)
+	input := input.New(playerInputChannel, nickname)
 
 	go game.Run()
-	go game.RunPlayer()
+	go game.RunAllPlayers()
 
 	go TCPClient.StartTCPClient(host, port, nickname, playerPosChannel, allPlayerInfosChannel)
 

@@ -8,6 +8,7 @@ import (
 // Used for multiplayer data sharing
 type PlayerInfo struct {
 	Nickname   string           `json:"nickname"`
+	Character  string           `json:"character"` // Character (skin), key, not name
 	Pos        Pos              `json:"pos"`
 	KeyPressed input.KeyPressed `json:"keyPressed"`
 }
